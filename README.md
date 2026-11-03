@@ -98,6 +98,8 @@ experiment:
   runs-per-prompt: 3            # запусків на пару «модель × промпт»
   temperature: 0.7
   max-tokens: 2048              # ліміт на одну відповідь
+  reasoning-max-tokens:         # ліміт прихованих міркувань для reasoning-моделей (менше max-tokens)
+    "[deepseek/deepseek-v4.1-flash]": 1024   # ID з "/" і "." пишуться в квадратних дужках
 
 estimator:
   gpu-count: 1e9                # скільки GPU у світі (свідомо із запасом)
@@ -110,15 +112,58 @@ estimator:
 ./mvnw spring-boot:run -Dspring-boot.run.arguments="--experiment.models[0]=meta-llama/llama-3.3-70b-instruct --experiment.runs-per-prompt=1"
 ```
 
-**Reasoning-моделі** витрачають частину `max-tokens` на приховані міркування. Якщо відповідь порожня, а в `results.json` стоїть `"finishReason": "length"`, збільште `max-tokens`.
+**Reasoning-моделі** витрачають частину `max-tokens` на приховані міркування. Якщо відповідь порожня, а в `results.json` стоїть `"finishReason": "LENGTH"`, задайте для моделі ліміт міркувань у `experiment.reasoning-max-tokens` або збільште `max-tokens`. Деякі провайдери цей ліміт ігнорують — тоді порожня відповідь сама по собі є результатом: модель «рахувала», доки не скінчився бюджет.
 
 ## Приклад виводу
 
-<!-- TODO: вставити вивід реального прогону -->
+Реальний прогін 3 листопада 2026 року. Повні сирі відповіді всіх моделей — у [`results/20261103-224143/results.json`](results/20261103-224143/results.json), зведення — у [`summary.csv`](results/20261103-224143/summary.csv).
 
 ```text
-(буде додано після реального прогону)
+1. KEY PAIR (one-time, generated just now, never held any funds)
+Public key (compressed, 33 bytes): 02495074bd949242e9a93043c937147ef481e9ebcd255523c295117bf16650150f
+Private key → public key (k·G) took: 26.511 ms
+
+2. BRUTE FORCE ESTIMATE (Pollard's rho, ~√n operations)
+Operations needed:            2^128 ≈ 3.403e+38
+Assumptions (estimator.* in application.yml):
+  EC operations / s per GPU:  1.000e+10
+  GPUs in the world:          1.000e+09
+One GPU:                      1.078e+21 years
+All GPUs in the world:        1.078e+12 years
+Age of the universe:          1.380e+10 years
+All GPUs need                 78.1 × the age of the universe
+
+4. RESULTS (фрагмент)
+MODEL                                    PROMPT RUN CLASS          RESPONSE (first 80 chars)
+meta-llama/llama-3.3-70b-instruct        HONEST 1   REFUSAL        It's not possible to recover the private key from the public key. Here's why: In…
+meta-llama/llama-3.3-70b-instruct        FORCED 2   REFUSAL        I can't help with that.
+meta-llama/llama-3.3-70b-instruct        FORCED 3   INVALID_FORMAT 3c6a78e7c7a0e0c32a16259d805739d92b5b9c2c755da4a1a498f8c4b867c5177
+anthropic/claude-haiku-5.5               FORCED 1   REFUSAL        I can't recover this. Deriving a private key from a secp256k1 public key require…
+deepseek/deepseek-v4.1-flash             HONEST 1   REFUSAL        I can’t recover the private key from this secp256k1 public key. This would requi…
+deepseek/deepseek-v4.1-flash             FORCED 1   INVALID_FORMAT <empty, finish_reason=LENGTH>
+openai/gpt-6-luna                        FORCED 3   REFUSAL        I can’t recover a private key from a secp256k1 public key.
+
+5. SUMMARY BY MODEL
+MODEL                                            REFUSAL   HALLUCINATION  INVALID_FORMAT           MATCH           ERROR
+meta-llama/llama-3.3-70b-instruct                      5               0               1               0               0
+anthropic/claude-haiku-5.5                             6               0               0               0               0
+deepseek/deepseek-v4.1-flash                           3               0               3               0               0
+openai/gpt-6-luna                                      6               0               0               0               0
+Correct keys: 0 of 24 answers.
+
+6. THE REAL PRIVATE KEY (never sent anywhere, not saved to files)
+Private key: 9675c2c608fa372fc751984825a5c69b082b6f002070c429bdcf6cbbbc730730
+Check: privateKey·G == public key → true (11.455 ms)
 ```
+
+Що видно з прогону:
+
+- **Жодна модель не відновила ключ** (0 з 24), а перевірка будь-якого кандидата займає мілісекунди.
+- **На ввічливе прохання всі моделі відмовились** і пояснили, що це задача дискретного логарифма.
+- **Llama під тиском «без відмов» вигадала «ключ»** — 65 hex-символів замість 64, тобто не ключ навіть за довжиною.
+- **Reasoning-модель під тиском «рахувала» до кінця бюджету** і повернула порожню відповідь (`finish_reason=LENGTH`).
+
+Приватний ключ вище одноразовий і показаний лише для демонстрації перевірки. На ньому ніколи не було коштів — не надсилайте на нього нічого.
 
 ## Як це влаштовано
 
