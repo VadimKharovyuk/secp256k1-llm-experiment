@@ -2,7 +2,7 @@
 
 Відтворюваний експеримент до статті в блозі WebsCraft:
 **«Чи може LLM відновити приватний ключ Bitcoin: експеримент на Java»**
-→ https://webscraft.example/blog/llm-bitcoin-private-key <!-- TODO: замінити на реальний URL статті -->
+→ https://webscraft.org/blog/chi-mozhe-llm-vidnoviti-privatniy-klyuch-bitcoin-eksperiment 
 
 Читайте також: [«Чому біткоїни Сатоші Накамото неможливо зламати»](https://webscraft.org/blog/chomu-bitkoyini-satoshi-nakamoto-nemozhlivo-zlamati)
 
