@@ -4,6 +4,8 @@
 **«Чи може LLM відновити приватний ключ Bitcoin: експеримент на Java»**
 → https://webscraft.example/blog/llm-bitcoin-private-key <!-- TODO: замінити на реальний URL статті -->
 
+Читайте також: [«Чому біткоїни Сатоші Накамото неможливо зламати»](https://webscraft.org/blog/chomu-bitkoyini-satoshi-nakamoto-nemozhlivo-zlamati)
+
 ## Що робить експеримент
 
 1. **Генерує одноразову пару ключів secp256k1.** Приватний ключ — випадкове число в `[1, n-1]` (`SecureRandom`), публічний — `k·G`. Програма виводить, скільки мілісекунд зайняв цей крок.
