@@ -1,0 +1,73 @@
+{
+  "startedAt" : "2026-11-03T23:52:15.436774",
+  "finishedAt" : "2026-11-03T23:52:45.662521",
+  "environment" : {
+    "cores" : 10,
+    "cpu" : "Apple M1 Pro",
+    "jvm" : "25",
+    "osArch" : "aarch64"
+  },
+  "speed" : {
+    "warmupCandidates" : 20000,
+    "benchmarkCandidates" : 100000,
+    "candidatesPerSecondPerThread" : 9456.966595013813,
+    "cores" : 10,
+    "candidatesPerSecondAllCores" : 94569.66595013814
+  },
+  "scenarios" : [ {
+    "scenario" : "SECONDS_DAY",
+    "description" : "Random seeded with Unix time in seconds; generation day known",
+    "publicKeyHex" : "02eac8b5651d35592053386015e1989b68a9a1b3e4350d6d842fa1a86be8893abe",
+    "keyspace" : 86400,
+    "searched" : true,
+    "found" : true,
+    "foundSeed" : 1793679369,
+    "foundPrivateKey" : "4839c1813157b07802eb5324310a9fb30cc46027f7f3cb2caf1158fa3d70aafc",
+    "candidateOrdinal" : 15370,
+    "seconds" : 0.491355167,
+    "note" : "Window of 86,400 seeds searched on 10 cores"
+  }, {
+    "scenario" : "MILLIS_HOUR",
+    "description" : "Random seeded with Unix time in milliseconds; generation hour known",
+    "publicKeyHex" : "02cc8169d1a51a4f0b60804ae1d9d791f9485bd282ef3405ea9bf3f5ef965138c5",
+    "keyspace" : 3600000,
+    "searched" : true,
+    "found" : true,
+    "foundSeed" : 1793720874252,
+    "foundPrivateKey" : "f7eb77a5a0da1034da4c946b5fee19bad59c36181865c116e2430afcb0d3b49c",
+    "candidateOrdinal" : 2874253,
+    "seconds" : 16.906638041,
+    "note" : "Window of 3,600,000 seeds searched on 10 cores"
+  }, {
+    "scenario" : "SEED_32BIT",
+    "description" : "Random seeded with an arbitrary 32-bit value (Milk Sad class)",
+    "publicKeyHex" : "022cd21a23ee2bd9174f232472a516c7493d4094ed0c3270007f07624a87a831c3",
+    "keyspace" : 4294967296,
+    "searched" : false,
+    "found" : false,
+    "foundSeed" : null,
+    "foundPrivateKey" : null,
+    "candidateOrdinal" : null,
+    "seconds" : null,
+    "note" : "Not enumerated. Full 2^32 search on this machine (all cores) ≈ 12.6 hours"
+  }, {
+    "scenario" : "SECURE_RANDOM",
+    "description" : "SecureRandom, 256-bit key (reference, not attackable)",
+    "publicKeyHex" : "020aa06f3ae0df0be0a3f03aef3c907162a5b79224c8644409a3981f67522d6698",
+    "keyspace" : 115792089237316195423570985008687907852837564279074904382605163141518161494337,
+    "searched" : false,
+    "found" : false,
+    "foundSeed" : null,
+    "foundPrivateKey" : null,
+    "candidateOrdinal" : null,
+    "seconds" : null,
+    "note" : "~2^128 operations (Pollard's rho). See the recovery experiment: far beyond all GPUs in the world running for the age of the universe."
+  } ],
+  "extrapolation32" : {
+    "keyspace" : 4294967296,
+    "secondsThisMachineAllCores" : 45415.9085035208,
+    "gpuCount" : 100,
+    "candidatesPerSecondPerGpu" : 1.0E+9,
+    "secondsOnGpus" : 0.04294967296
+  }
+}
