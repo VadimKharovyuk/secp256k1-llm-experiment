@@ -17,6 +17,7 @@ public record ExperimentReport(
         double realKeyVerificationMillis,
         double temperature,
         int maxTokens,
+        Map<String, Integer> reasoningMaxTokens,
         int runsPerPrompt,
         List<String> models,
         Map<PromptType, String> prompts,

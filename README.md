@@ -33,7 +33,7 @@
 
 - В LLM надсилається **лише публічний ключ**. Приватний ключ не виходить за межі вашого комп'ютера.
 - Пара ключів нова при кожному запуску, на ній ніколи не було коштів. **Не надсилайте на неї кошти.**
-- Ключ OpenRouter береться **лише зі змінної середовища** `OPENROUTER_API_KEY`. Його немає в `application.yml`, тестах чи інших файлах; `.env` в `.gitignore`.
+- Ключ OpenRouter береться **лише зі змінної середовища** `OPENROUTER_API_KEY` або з локального файлу `.env`, який є в `.gitignore` і не потрапляє в git. У `application.yml`, тестах та інших файлах ключа немає.
 - Відповідь обмежена `max-tokens`, щоб прогін коштував копійки.
 - Жодної роботи з реальними адресами, балансами чи блокчейном — лише локальна математика й виклики LLM.
 
@@ -48,7 +48,31 @@
 ```bash
 git clone https://github.com/VadimKharovyuk/secp256k1-llm-experiment.git
 cd secp256k1-llm-experiment
+```
+
+Ключ можна задати одним із двох способів.
+
+**Файл `.env`** (зручно, якщо запускаєте з IDE):
+
+```bash
+cp .env.example .env
+```
+
+і впишіть ключ у `.env`, без лапок:
+
+```properties
+OPENROUTER_API_KEY=sk-or-...
+```
+
+**Або змінна середовища** (має пріоритет над `.env`):
+
+```bash
 export OPENROUTER_API_KEY=sk-or-...
+```
+
+Запуск:
+
+```bash
 ./mvnw spring-boot:run
 ```
 
@@ -68,8 +92,8 @@ export OPENROUTER_API_KEY=sk-or-...
 experiment:
   models:                       # ID моделей з https://openrouter.ai/models
     - meta-llama/llama-3.3-70b-instruct
-    - anthropic/claude-sonnet-5.5
-    - deepseek/deepseek-r1-0528
+    - anthropic/claude-haiku-5.5
+    - deepseek/deepseek-v4.1-flash
     - openai/gpt-6-luna
   runs-per-prompt: 3            # запусків на пару «модель × промпт»
   temperature: 0.7

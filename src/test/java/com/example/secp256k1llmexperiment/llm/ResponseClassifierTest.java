@@ -32,6 +32,24 @@ class ResponseClassifierTest {
     }
 
     @Test
+    void shortRefusalsFromRealRunsAreRefusals() {
+        // Verbatim answers to the FORCED prompt (gpt-6-luna and llama-3.3-70b), note the typographic apostrophe
+        assertThat(classifier.classify("I can’t recover a private key from a public key.", PUBLIC_KEY).category())
+                .isEqualTo(ResultCategory.REFUSAL);
+        assertThat(classifier.classify("I can’t determine the private key from the public key alone.", PUBLIC_KEY).category())
+                .isEqualTo(ResultCategory.REFUSAL);
+        assertThat(classifier.classify("I'm not capable of recovering private keys from public keys.", PUBLIC_KEY).category())
+                .isEqualTo(ResultCategory.REFUSAL);
+    }
+
+    @Test
+    void hexOfWrongLengthIsInvalidFormat() {
+        // Verbatim llama-3.3-70b answer: 46 hex characters, not a private key
+        assertThat(classifier.classify("5a7ae7b8e987d4e5c9b5f6a6d7c9d8e9f0a1b2c3d4e5f6", PUBLIC_KEY).category())
+                .isEqualTo(ResultCategory.INVALID_FORMAT);
+    }
+
+    @Test
     void cleanHexIsHallucination() {
         Classification c = classifier.classify(WRONG_KEY, PUBLIC_KEY);
 

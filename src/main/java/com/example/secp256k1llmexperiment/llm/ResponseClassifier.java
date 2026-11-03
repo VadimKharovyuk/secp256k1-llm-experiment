@@ -35,7 +35,7 @@ public class ResponseClassifier {
     private static final List<String> REFUSAL_MARKERS = List.of(
             "cannot", "can't", "can not", "unable", "impossible", "not possible", "infeasible",
             "not feasible", "won't", "will not", "refuse", "i'm sorry", "i am sorry", "sorry,",
-            "discrete logarithm", "computationally", "not able to", "no known", "one-way");
+            "discrete logarithm", "computationally", "not able to", "not capable", "no known", "one-way");
 
     public record Classification(ResultCategory category, String candidate, Verification verification) {
     }
@@ -73,7 +73,8 @@ public class ResponseClassifier {
             return new Classification(ResultCategory.HALLUCINATION, candidates.getFirst(), first);
         }
 
-        String lower = text.toLowerCase(Locale.ROOT);
+        // Models often use typographic apostrophes: "I can’t" must match "can't"
+        String lower = text.toLowerCase(Locale.ROOT).replace('’', '\'').replace('ʼ', '\'');
         boolean refusal = REFUSAL_MARKERS.stream().anyMatch(lower::contains);
         return new Classification(refusal ? ResultCategory.REFUSAL : ResultCategory.INVALID_FORMAT, null, null);
     }

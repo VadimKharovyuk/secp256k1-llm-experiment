@@ -105,6 +105,7 @@ public class ExperimentRunner implements CommandLineRunner {
                 real.millis(),
                 properties.temperature(),
                 properties.maxTokens(),
+                properties.reasoningMaxTokens(),
                 properties.runsPerPrompt(),
                 properties.models(),
                 prompts,
