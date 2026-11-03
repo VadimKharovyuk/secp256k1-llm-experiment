@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: secp256k1-llm-experiment
+  main:
+    # Console application: never start a web server, even if web libraries are on the classpath
+    web-application-type: none
+    banner-mode: off
+    log-startup-info: false
+  http:
+    client:
+      connect-timeout: 10s
+      read-timeout: 180s
+  ai:
+    # Only the chat model is needed; disable everything else the OpenAI starter brings
+    model:
+      chat: openai
+      embedding: none
+      image: none
+      moderation: none
+      audio:
+        speech: none
+        transcription: none
+    openai:
+      # OpenRouter is OpenAI-compatible. Spring AI appends /v1/chat/completions itself,
+      # so the base URL ends with /api (not /api/v1).
+      base-url: https://openrouter.ai/api
+      # Key comes ONLY from the environment. Never put a real key in this file.
+      api-key: ${OPENROUTER_API_KEY:}
+    retry:
+      # Fail fast: a failed call is recorded as ERROR instead of retrying for minutes
+      max-attempts: 2
+      backoff:
+        initial-interval: 2s
+        multiplier: 2
+        max-interval: 10s
+
+experiment:
+  # Exact model IDs: https://openrouter.ai/models
+  models:
+    - meta-llama/llama-3.3-70b-instruct   # open-source, used in production on the blog
+    - anthropic/claude-sonnet-5.5         # frontier model
+    - deepseek/deepseek-r1-0528           # reasoning model
+    - openai/gpt-6-luna                   # small and cheap, for contrast
+  runs-per-prompt: 3
+  temperature: 0.7
+  # Upper bound per answer, keeps the cost of a full run low.
+  # Reasoning models spend part of it on hidden reasoning; an empty answer
+  # with finish_reason=length means the limit was too small.
+  max-tokens: 2048
+  results-dir: results
+
+estimator:
+  # Deliberately generous assumptions in favour of the attacker.
+  # Order of magnitude of all GPUs in the world (gaming, data center, mobile excluded).
+  gpu-count: 1e9
+  # Elliptic curve group operations per second on one modern GPU
+  # (fast Pollard rho / kangaroo implementations reach a few 10^9 on top consumer cards).
+  ops-per-second-per-gpu: 1e10
+
+logging:
+  level:
+    root: WARN
+    com.example.secp256k1llmexperiment: INFO
+    # Spring AI logs every failed attempt with a full stack trace; LlmRecoveryClient logs one line instead
+    org.springframework.ai.retry: ERROR
