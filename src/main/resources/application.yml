@@ -77,9 +77,13 @@ weak-entropy:
 # Experiment "llm-review": --experiment=llm-review (needs OpenRouter key)
 llm-review:
   runs-per-prompt: 3
-  # deepseek spends tokens on hidden reasoning; 2048 was not enough in the recovery run
+  # Reasoning models spend tokens on hidden reasoning; with only 2048 some REVIEW answers came
+  # back empty (finish_reason=LENGTH). Give the reasoning models more room; claude-haiku writes
+  # long reviews and was truncated at 2048, so raise it too.
   model-max-tokens:
     "[deepseek/deepseek-v4.1-flash]": 8192
+    "[openai/gpt-6-luna]": 8192
+    "[anthropic/claude-haiku-5.5]": 4096
 
 estimator:
   # Deliberately generous assumptions in favour of the attacker.

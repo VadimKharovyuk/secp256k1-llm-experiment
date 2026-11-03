@@ -10,6 +10,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+/**
+ * Entry point. The experiment is chosen with {@code --experiment=<name>} (default {@code recovery}):
+ *
+ * <pre>
+ *   ./mvnw spring-boot:run                                                      # recovery   (needs OPENROUTER_API_KEY)
+ *   ./mvnw spring-boot:run -Dspring-boot.run.arguments=--experiment=weak-entropy # weak-entropy (no key needed)
+ *   ./mvnw spring-boot:run -Dspring-boot.run.arguments=--experiment=llm-review   # llm-review  (needs OPENROUTER_API_KEY)
+ *   ./mvnw test                                                                 # tests (offline, no key)
+ * </pre>
+ */
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class Secp256k1LlmExperimentApplication {

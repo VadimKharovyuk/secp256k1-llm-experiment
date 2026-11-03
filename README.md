@@ -6,6 +6,34 @@
 
 Читайте також: [«Чому біткоїни Сатоші Накамото неможливо зламати»](https://webscraft.org/blog/chomu-bitkoyini-satoshi-nakamoto-nemozhlivo-zlamati)
 
+## Швидкий старт
+
+Експеримент 1 — recovery (за замовчуванням, потрібен ключ OpenRouter):
+
+```bash
+./mvnw spring-boot:run
+```
+
+Експеримент 2 — weak-entropy (ключ не потрібен):
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--experiment=weak-entropy
+```
+
+Експеримент 3 — llm-review (потрібен ключ OpenRouter):
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--experiment=llm-review
+```
+
+Тести (без мережі, ключ не потрібен):
+
+```bash
+./mvnw test
+```
+
+Ключ OpenRouter — у файлі `.env` (`cp .env.example .env`) або через `export OPENROUTER_API_KEY=sk-or-...`. Деталі нижче.
+
 ## Експерименти
 
 Репозиторій містить три експерименти. За замовчуванням запускається перший — рівно так само, як у першій статті.
