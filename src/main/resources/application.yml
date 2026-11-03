@@ -58,6 +58,29 @@ experiment:
     "[deepseek/deepseek-v4.1-flash]": 1024
   results-dir: results
 
+# Experiment "weak-entropy": --experiment=weak-entropy (no OpenRouter key needed)
+weak-entropy:
+  scenarios:
+    - SECONDS_DAY      # seed = Unix seconds, attacker knows the day (86 400 candidates)
+    - MILLIS_HOUR      # seed = Unix millis, attacker knows the hour (3 600 000 candidates)
+    - SEED_32BIT       # 2^32 keys (Milk Sad): not enumerated, only extrapolated
+    - SECURE_RANDOM    # reference: ~2^128, see the recovery experiment
+  seconds-window: 86400
+  millis-window: 3600000
+  warmup-candidates: 20000
+  benchmark-candidates: 100000
+  extrapolation:
+    # Assumptions for "how long to search all 2^32 on N GPUs". Shown next to the result.
+    gpu-count: 100
+    candidates-per-second-per-gpu: 1e9
+
+# Experiment "llm-review": --experiment=llm-review (needs OpenRouter key)
+llm-review:
+  runs-per-prompt: 3
+  # deepseek spends tokens on hidden reasoning; 2048 was not enough in the recovery run
+  model-max-tokens:
+    "[deepseek/deepseek-v4.1-flash]": 8192
+
 estimator:
   # Deliberately generous assumptions in favour of the attacker.
   # Order of magnitude of all GPUs in the world (gaming, data center, mobile excluded).

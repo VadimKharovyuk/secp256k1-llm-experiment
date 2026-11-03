@@ -32,11 +32,17 @@ public class LlmRecoveryClient {
         this.properties = properties;
     }
 
+    /** Uses the global {@code experiment.max-tokens}. */
     public LlmResponse ask(String model, String prompt) {
+        return ask(model, prompt, properties.maxTokens());
+    }
+
+    /** Same call with an explicit token budget (llm-review raises it for reasoning models). */
+    public LlmResponse ask(String model, String prompt, int maxTokens) {
         OpenAiChatOptions.Builder options = OpenAiChatOptions.builder()
                 .model(model)
                 .temperature(properties.temperature())
-                .maxTokens(properties.maxTokens());
+                .maxTokens(maxTokens);
         Integer reasoningBudget = properties.reasoningMaxTokens().get(model);
         if (reasoningBudget != null) {
             // OpenRouter-specific field, sent as a top-level "reasoning" object
